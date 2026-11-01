@@ -1,0 +1,108 @@
+/* ============================================================================
+   DUBE FLAME & FEAST — ANIMATIONS
+   Native CSS keyframes + scroll-reveal states. Respects reduced motion.
+   ========================================================================== */
+
+/* ---------- Keyframes ---------- */
+@keyframes heroZoom { from { transform: scale(1.12); } to { transform: scale(1); } }
+
+@keyframes heroIn { to { opacity: 1; transform: translateY(0); } }
+
+@keyframes mobileLink { to { opacity: 1; transform: translateY(0); } }
+
+/* Hero title: each letter rises and fades in, one at a time. */
+@keyframes letterIn { to { opacity: 1; transform: translateY(0); } }
+
+@keyframes scrollDot {
+  0%   { opacity: 0; transform: translate(-50%, 0); }
+  40%  { opacity: 1; }
+  80%  { opacity: 0; transform: translate(-50%, 10px); }
+  100% { opacity: 0; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes waPulse {
+  0%   { box-shadow: 0 10px 30px -8px rgba(37,211,102,0.6), 0 0 0 0 rgba(37,211,102,0.5); }
+  70%  { box-shadow: 0 10px 30px -8px rgba(37,211,102,0.6), 0 0 0 16px rgba(37,211,102,0); }
+  100% { box-shadow: 0 10px 30px -8px rgba(37,211,102,0.6), 0 0 0 0 rgba(37,211,102,0); }
+}
+
+/* ---------- Hero entrance ---------- */
+.hero__bg { animation: heroZoom 18s ease-out forwards; }
+
+.hero [data-hero] { opacity: 0; transform: translateY(26px); }
+.hero.ready [data-hero] { animation: heroIn 0.9s var(--ease) forwards; }
+.hero.ready [data-hero="1"] { animation-delay: 0.15s; }
+.hero.ready [data-hero="2"] { animation-delay: 0.30s; }
+.hero.ready [data-hero="3"] { animation-delay: 0.45s; }
+.hero.ready [data-hero="4"] { animation-delay: 0.60s; }
+.hero.ready [data-hero="5"] { animation-delay: 0.75s; }
+
+.hero__scroll .mouse::after { animation: scrollDot 1.6s infinite; }
+
+/* ---------- Mobile menu link stagger ---------- */
+body.menu-open .nav__mobile a { animation: mobileLink 0.5s var(--ease) forwards; }
+body.menu-open .nav__mobile a:nth-child(1) { animation-delay: 0.10s; }
+body.menu-open .nav__mobile a:nth-child(2) { animation-delay: 0.16s; }
+body.menu-open .nav__mobile a:nth-child(3) { animation-delay: 0.22s; }
+body.menu-open .nav__mobile a:nth-child(4) { animation-delay: 0.28s; }
+body.menu-open .nav__mobile a:nth-child(5) { animation-delay: 0.34s; }
+body.menu-open .nav__mobile a:nth-child(6) { animation-delay: 0.40s; }
+body.menu-open .nav__mobile a:nth-child(7) { animation-delay: 0.46s; }
+
+/* ---------- Spinner / WhatsApp ---------- */
+.spinner { animation: spin 0.7s linear infinite; }
+.wa-float { animation: waPulse 2.6s infinite; }
+
+/* ---------- Scroll reveal ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+[data-reveal].in { opacity: 1; transform: translateY(0); }
+[data-reveal-delay="1"] { transition-delay: 0.10s; }
+[data-reveal-delay="2"] { transition-delay: 0.20s; }
+[data-reveal-delay="3"] { transition-delay: 0.30s; }
+[data-reveal-delay="4"] { transition-delay: 0.40s; }
+
+/* ---------- Section title underline sweep ---------- */
+/* A red line sweeps in under each section title as it scrolls into view. */
+.section-title {
+  position: relative;
+}
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  height: 3px;
+  width: 0;
+  max-width: 100%;
+  background: linear-gradient(90deg, var(--red), #ff7a3c);
+  border-radius: 2px;
+  transition: width 0.9s var(--ease) 0.25s;
+}
+.section-head.center .section-title::after { left: 50%; transform: translateX(-50%); }
+/* Reveal the underline once the title's reveal container is in view. */
+[data-reveal].in .section-title::after,
+.section-head[data-reveal].in .section-title::after { width: 64px; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .hero__bg { animation: none; transform: scale(1); }
+  [data-reveal] { opacity: 1; transform: none; }
+  .hero [data-hero] { opacity: 1; transform: none; }
+  /* Keep mobile menu options visible when the entrance animation is disabled. */
+  body.menu-open .nav__mobile a { opacity: 1; transform: none; animation: none; }
+  /* Hero title letters and section underlines: show final state, skip motion. */
+  .hero__title .char { opacity: 1; transform: none; animation: none; }
+  .section-title::after { transition: none; width: 64px; }
+}
